@@ -4,7 +4,7 @@ import csv
 
 
 def make_directory(dir_name):
-    target_path = Path.cwd() / '..' / "exports" / f"{dir_name}"
+    target_path = Path.cwd() / ".." / "exports" / f"{dir_name}"
     target_path.mkdir(parents=True, exist_ok=True)
     return target_path
 

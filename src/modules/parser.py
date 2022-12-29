@@ -5,11 +5,11 @@ RATINGS = {"One": 1, "Two": 2, "Three": 3, "Four": 4, "Five": 5}
 
 
 def get_page_count(html_str):
-    count_info = (
+    dom_count = (
         HTMLParser(html_str).css_first("form.form-horizontal").css("strong")
     )
-    all_books_count = int(count_info[0].text())
-    page_books_count = int(count_info[-1].text())
+    all_books_count = int(dom_count[0].text())
+    page_books_count = int(dom_count[-1].text())
     pages_count = all_books_count // page_books_count
     return pages_count
 
@@ -54,7 +54,8 @@ def build_book(book_html, book_url):
         "url upc title itp etp stock description "
         "category rating cover_url cover_name",
     )
-    book = Book(
+
+    return Book(
         book_url,
         upc,
         title,
@@ -67,4 +68,3 @@ def build_book(book_html, book_url):
         cover_url,
         cover_name,
     )
-    return book

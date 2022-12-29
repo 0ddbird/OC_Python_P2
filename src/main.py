@@ -1,11 +1,13 @@
 import sys
-import time
 import asyncio
 import aiohttp
 
 from src.modules.export import make_directory, export_csv
-from src.modules.scraper import get_catalogue_pages_urls, get_books_urls, \
-    get_all_books
+from src.modules.scraper import (
+    get_catalogue_pages_urls,
+    get_books_urls,
+    get_all_books,
+)
 
 
 async def main():
