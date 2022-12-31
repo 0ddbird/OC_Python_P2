@@ -1,46 +1,43 @@
 import asyncio
+from aiohttp import ClientSession as Cs
 import itertools
+from pathlib import Path
+from typing import List
 
 from src.modules.export import download_cover
-from src.modules.parser import get_page_count, parse_books_urls, build_book
+from src.modules.parser import parse_catalogue_page, build_book, Book
 
 
-async def async_get_page_html(session, url):
+async def get_html(session: Cs, url: str) -> str:
     async with session.get(url) as resp:
         return await resp.text()
 
 
-async def get_catalogue_pages_urls(session, first_url):
-    base_url = "https://books.toscrape.com/catalogue/page-"
-    first_page_html = await async_get_page_html(session, first_url)
-    last_page = get_page_count(first_page_html) + 1
-    urls = [f"{base_url}{page_num}.html" for page_num in range(1, last_page)]
-    return urls
+async def get_urls_in_page(session: Cs, url: str) -> List[str]:
+    html = await get_html(session, url)
+    books_urls = parse_catalogue_page(html)
+    return books_urls
 
 
-async def get_urls_in_page(session, url):
-    html = await async_get_page_html(session, url)
-    return parse_books_urls(html)
-
-
-async def get_books_urls(session, catalogue_pages_urls):
+async def get_books_urls(session: Cs, cat_pages_urls: List[str]) -> list[str]:
     tasks = []
-    for url in catalogue_pages_urls:
+    for url in cat_pages_urls:
         tasks.append(asyncio.create_task(get_urls_in_page(session, url)))
     url_lists = await asyncio.gather(*tasks)
     book_urls = list(itertools.chain(*url_lists))
     return [f"https://books.toscrape.com/catalogue/{u}" for u in book_urls]
 
 
-async def get_book(session, book_url, cover_path):
-    book_html = await async_get_page_html(session, book_url)
-    book = build_book(book_html, book_url)
-    await download_cover(session, cover_path, book.cover_url, book.cover_name)
+async def get_book(session: Cs, url: str, path: Path) -> Book:
+    book_html = await get_html(session, url)
+    book = build_book(book_html, url)
+    await download_cover(session, path, book.cover_url, book.cover_name)
     return book
 
 
-async def get_all_books(session, books_urls, covers_path):
+async def get_books(session: Cs, urls: List[str], path: Path) -> tuple[Book]:
     tasks = []
-    for url in books_urls:
-        tasks.append(asyncio.create_task(get_book(session, url, covers_path)))
-    return await asyncio.gather(*tasks)
+    for url in urls:
+        tasks.append(asyncio.create_task(get_book(session, url, path)))
+        books = await asyncio.gather(*tasks)
+    return books

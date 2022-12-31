@@ -3,21 +3,23 @@ import asyncio
 import aiohttp
 
 from src.modules.export import make_directory, export_csv
-from src.modules.scraper import (
-    get_catalogue_pages_urls,
-    get_books_urls,
-    get_all_books,
-)
+from src.modules.scraper import get_books_urls, get_books
+from src.views.menu import main_menu
 
 
-async def main():
+def get_all_books():
+    pass
+
+
+async def main() -> None:
     async with aiohttp.ClientSession() as session:
         covers_path = make_directory("covers")
         csv_path = make_directory("csv")
         first_url = "https://books.toscrape.com/catalogue/page-1.html"
-        cat_pages_urls = await get_catalogue_pages_urls(session, first_url)
-        books_urls = await get_books_urls(session, cat_pages_urls)
-        books = await get_all_books(session, books_urls, covers_path)
+        selected_urls = await main_menu(session, first_url)
+        books_urls = await get_books_urls(session, selected_urls)
+        books = await get_books(session, books_urls, covers_path)
+
     export_csv(csv_path, books)
 
 

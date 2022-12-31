@@ -7,11 +7,10 @@
 3. [Solving approach](#3)  
 __ 3.1 [Version 1](#3.1)  
 __ 3.2 [Version 2](#3.2)  
-__ 3.3 [Version 3](#3.3)  
-__ 3.4 [Version 4](#3.4)  
+__ 3.3 [Version 3](#3.3)
 4. [Codebase structure](#4)
 5. [Performance breakdown](#5)
-6. 5. [Improvements](#6)
+6. [Upcoming improvements](#6)
 
 
 ## <a id="1">Project goals</a>
@@ -92,7 +91,7 @@ Therefore, if this is fixed in the future, my script could maybe run in 2.3s.
 
 ### <a id='4'>4. - Code Structure</a>
 
-In order to scrape all books details and download covers, my script had to 
+In order to scrape all books details and download covers, my script had to: 
 
 1. Navigate through every catalogue page of books.toscrape.com and gather books urls
 2. Request the HTML content for every book page and parse it to find the data needed
@@ -103,7 +102,7 @@ In order to scrape all books details and download covers, my script had to
 As of asynchronous version 4 of the script, I tried to request as little content as possible, and to chain functions to get book details/download covers to be executed in a single coroutine.
 
 #### Step 1
-Instead of requesting/parsing each page of the catalogue,   
+Instead of requesting/parsing each page of the catalogue, I looked for the books count in the landing page.
 ![counter](assets/catalogue_1_count.png)  
 Since every catalogue pages share the same url structure : `https://books.toscrape.com/catalogue/page-{page_num}.html`
 I just had to divide 1000 books / 20 to build a list of 50 urls from https://books.toscrape.com/catalogue/page-1.html to https://books.toscrape.com/catalogue/page-50.html 
@@ -114,7 +113,7 @@ That async task had to :
 - Make a GET request to the catalogue page url
 - Parse the HTML to extract the 20 books urls
 
-Finally I awaited `asyncio.gather(*tasks)` to pack all the 20 * 50 books urls in a list
+Finally, I awaited `asyncio.gather(*tasks)` to pack all the 20 * 50 books urls in a list
 
 #### Step 2, 3, 4
 
@@ -126,7 +125,7 @@ For each book, i designed an async task to :
 - Store the book details in a namedtuple with the following structure
 
 ```python
-Book = nameddtuple(
+Book = namedtuple(
         "Book",
         "url upc title itp etp stock description "
         "category rating cover_url cover_id",
@@ -137,7 +136,7 @@ Book = nameddtuple(
 - Write it to the `exports/covers/` local directory
 - Return the Book namedtuple
 
-After all the tasks were executed, gathered all the books in a list.
+After all the tasks were executed, asyncio gathered all the books in a list.
 
 #### Step 5
 
