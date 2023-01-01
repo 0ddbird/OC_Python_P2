@@ -26,14 +26,18 @@ async def main() -> None:
         user_choice = prompt_scraping_mode()
         if user_choice == MenuChoice.quit:
             exit(0)
+
+        all_categories = await request_categories(session, first_url)
+
         if user_choice == MenuChoice.all:
+            selected_categories = all_categories
             urls = await get_all_catalogue(session, first_url)
         else:
-            all_categories = await request_categories(session, first_url)
             selected_categories = prompt_category_selection(all_categories)
-            for cat_name, _ in selected_categories:
-                make_directory(cat_name, covers_path)
             urls = await get_catalogue_selection(session, selected_categories)
+
+        for cat_name, _ in selected_categories:
+            make_directory(cat_name, covers_path)
 
         books_urls = await get_books_urls(session, urls)
         books = await get_books(session, books_urls, covers_path)
