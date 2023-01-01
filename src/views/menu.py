@@ -32,12 +32,15 @@ def prompt_category_selection(
         "you want to scrape separated by a comma\n"
         "ex: travel, default, romance\n"
     )
-    user_selection = set(selected_categories.replace(" ", "").split(","))
-    u_sel_cap = set(x.lower().capitalize() for x in user_selection)
+    user_selection = set(selected_categories.split(","))
+    u_sel_cap = set(x.strip().lower() for x in user_selection)
+    print(u_sel_cap)
 
     if u_sel_cap.issubset(category_names):
         selected_categories = [
-            category for category in categories if category[0] in u_sel_cap
+            category
+            for category in categories
+            if category[0].lower() in u_sel_cap
         ]
         return selected_categories
 
