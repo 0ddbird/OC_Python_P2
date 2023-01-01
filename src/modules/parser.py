@@ -18,8 +18,10 @@ def get_page_count(html_str: str) -> int:
     dom_count = (
         HTMLParser(html_str).css_first("form.form-horizontal").css("strong")
     )
-    all_books_count = int(dom_count[0].text())
+    if len(dom_count) < 3:
+        return 1
     page_books_count = int(dom_count[-1].text())
+    all_books_count = int(dom_count[0].text())
     pages_count, rest = divmod(all_books_count, page_books_count)
     if rest == 0:
         return pages_count
@@ -29,8 +31,9 @@ def get_page_count(html_str: str) -> int:
 def parse_category_urls(html_str: str) -> Set[Tuple[str, str]] or None:
     categories = set()
 
-    cat_anchor_tags = HTMLParser(html_str).css(".nav-list > li > ul > li "
-                                               "> a")
+    cat_anchor_tags = HTMLParser(html_str).css(
+        ".nav-list > li > ul > li " "> a"
+    )
     for anchor_tag in cat_anchor_tags:
         cat_name = anchor_tag.text().strip()
         first_page_url = anchor_tag.attributes["href"]
@@ -46,5 +49,5 @@ def parse_catalogue_page(html_str: str) -> list[str]:
 
 
 def build_book(book_html: str, book_url: str) -> Book:
-    # return selectolax_parse(book_html, book_url)
-    return bs4_parse(book_html, book_url)
+    return selectolax_parse(book_html, book_url)
+    # return bs4_parse(book_html, book_url)

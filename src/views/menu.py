@@ -53,13 +53,14 @@ def prompt_category_selection(
         "you want to scrape separated by a comma\n"
         "ex: travel, default, romance\n"
     )
-    user_selection = set(selected_categories.split(","))
+    user_selection = set(selected_categories.replace(' ', '').split(","))
+    u_sel_cap = set(x.capitalize() for x in user_selection)
 
-    if user_selection.issubset(category_names):
+    if u_sel_cap.issubset(category_names):
         selected_categories_urls = [
             category
             for category in categories
-            if category[0] in user_selection
+            if category[0] in u_sel_cap
         ]
         return selected_categories_urls
 

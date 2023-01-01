@@ -1,4 +1,5 @@
 import asyncio
+import itertools
 
 from aiohttp import ClientSession as Cs
 
@@ -17,11 +18,16 @@ async def request_categories(session, first_url) -> Set[Tuple[str, str]]:
 
 async def get_category_urls(session, category, url):
     # For one category index url
+    # print(f"get_category_urls, {url}")
     cat_home_html = await get_html(session, url)
     page_count = get_page_count(cat_home_html)
-    category_urls = [
-        f"{BASE_URL}{category}_{page_count}.html" in range(1, page_count)
-    ]
+    if page_count > 1:
+        category_urls = [
+            f"{url}page-{page_num}.html" for page_num in range(1, page_count
+                                                               + 1)
+        ]
+    else:
+        category_urls = [f"{url}index.html"]
     return category_urls
 
 
@@ -29,11 +35,19 @@ async def get_catalogue_selection(
     session: Cs, category_urls: List[Tuple]
 ) -> List[str]:
     tasks = []
-
     for category, url in category_urls:
+        full_url = f"https://books.toscrape.com/catalogue/{url}".replace(
+            "index.html", ""
+        )
+
         tasks.append(
-            asyncio.create_task(get_category_urls(session, category, url))
+            asyncio.create_task(get_category_urls(session, category, full_url))
         )
     url_list = await asyncio.gather(*tasks)
 
-    return url_list
+    unpacked_urls = [*itertools.chain(*url_list)]
+    formatted_urls = [
+        u.replace("../../..", "https://books.toscrape.com/catalogue")
+        for u in unpacked_urls
+    ]
+    return formatted_urls

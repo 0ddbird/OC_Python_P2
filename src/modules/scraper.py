@@ -16,7 +16,8 @@ async def get_html(session: Cs, url: str) -> str:
 async def get_urls_in_page(session: Cs, url: str) -> List[str]:
     html = await get_html(session, url)
     books_urls = parse_catalogue_page(html)
-    return books_urls
+    formatted_urls = [u.replace("../../..", "") for u in books_urls]
+    return formatted_urls
 
 
 async def get_books_urls(session: Cs, cat_pages_urls: List[str]) -> list[str]:
@@ -28,14 +29,17 @@ async def get_books_urls(session: Cs, cat_pages_urls: List[str]) -> list[str]:
     return [f"https://books.toscrape.com/catalogue/{u}" for u in book_urls]
 
 
-async def get_book(session: Cs, url: str, path: Path) -> Book:
+async def get_book(session: Cs, url: str, path: str) -> Book:
     book_html = await get_html(session, url)
     book = build_book(book_html, url)
-    await download_cover(session, path, book.cover_url, book.cover_name)
+    await download_cover(session, path, book.cover_url, book.cover_name,
+                         book.category)
+    print(f'downloaded {book.title}')
+
     return book
 
 
-async def get_books(session: Cs, urls: List[str], path: Path) -> tuple[Book]:
+async def get_books(session: Cs, urls: List[str], path: str) -> tuple[Book]:
     tasks = []
     for url in urls:
         tasks.append(asyncio.create_task(get_book(session, url, path)))
