@@ -3,14 +3,14 @@ import itertools
 
 from aiohttp import ClientSession as Cs
 
-from src.modules.parser import parse_category_urls, get_page_count
+from src.modules.parser import parse_category_urls, get_page_count, T_category
 from src.modules.scraper import get_html
-from typing import List, Tuple, Set
+from typing import List, Tuple
 
 BASE_URL = "https://books.toscrape.com/catalogue/category/books/"
 
 
-async def request_categories(session, first_url) -> Set[Tuple[str, str]]:
+async def request_categories(session, first_url) -> List[T_category]:
     homepage_html = await get_html(session, first_url)
     categories = parse_category_urls(homepage_html)
     return categories

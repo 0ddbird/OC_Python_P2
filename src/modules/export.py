@@ -6,7 +6,7 @@ from src.modules.parser import Book
 
 
 def make_directory(dir_name: str, base_path=None) -> Path:
-    print(f'{base_path=}, {dir_name=}')
+    print(f"{base_path=}, {dir_name=}")
     if base_path:
         target_path = base_path / f"{dir_name}"
     else:
@@ -22,8 +22,7 @@ async def download_cover(
         cover = await resp.read()
     letters_only_re = r"[^a-zA-Z0-9]"
     file_name = re.sub(letters_only_re, "_", cov_name)
-    target_path = covers_path / f"{category}"
-    file_path = f"{target_path}/{file_name}.jpg"
+    file_path = covers_path / f"{category}/{file_name}.jpg"
     with open(file_path, "wb") as f:
         f.write(cover)
 

@@ -29,14 +29,13 @@ async def get_books_urls(session: Cs, cat_pages_urls: List[str]) -> list[str]:
     return book_urls
 
 
-async def get_book(session: Cs, url: str, path: Path) -> Book:
-    book_html = await get_html(session, url)
-    book = build_book(book_html, url)
+async def get_book(session: Cs, book_url: str, path: Path) -> Book:
+    book_html = await get_html(session, book_url)
+    book = build_book(book_html, book_url)
     await download_cover(
         session, path, book.cover_url, book.cover_name, book.category
     )
     print(f"downloaded {book.title}")
-
     return book
 
 
@@ -44,5 +43,5 @@ async def get_books(session: Cs, urls: List[str], path: Path) -> tuple[Book]:
     tasks = []
     for url in urls:
         tasks.append(asyncio.create_task(get_book(session, url, path)))
-        books = await asyncio.gather(*tasks)
+    books = await asyncio.gather(*tasks)
     return books

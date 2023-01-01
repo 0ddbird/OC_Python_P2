@@ -1,4 +1,4 @@
-from typing import Set, Tuple
+from typing import List, Tuple
 from collections import namedtuple
 from selectolax.parser import HTMLParser
 
@@ -12,6 +12,10 @@ Book = namedtuple(
     "url upc title itp etp stock description "
     "category rating cover_url cover_name",
 )
+
+category_name = str
+category_url = str
+T_category = Tuple[category_name, category_url]
 
 
 def get_page_count(html_str: str) -> int:
@@ -28,8 +32,8 @@ def get_page_count(html_str: str) -> int:
     return pages_count + 1
 
 
-def parse_category_urls(html_str: str) -> Set[Tuple[str, str]] or None:
-    categories = set()
+def parse_category_urls(html_str: str) -> List[T_category]:
+    categories = []
 
     cat_anchor_tags = HTMLParser(html_str).css(
         ".nav-list > li > ul > li " "> a"
@@ -38,8 +42,8 @@ def parse_category_urls(html_str: str) -> Set[Tuple[str, str]] or None:
         cat_name = anchor_tag.text().strip()
         first_page_url = anchor_tag.attributes["href"]
         if not first_page_url:
-            return None
-        categories.add((cat_name, first_page_url))
+            return []
+        categories.append((cat_name, first_page_url))
     return categories
 
 
