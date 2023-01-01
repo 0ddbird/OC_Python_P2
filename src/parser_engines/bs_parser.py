@@ -16,11 +16,13 @@ def bs4_parse(book_html: str, book_url: str) -> Book:
     num_count = slice(10, -10)
 
     menu = html.select("ul.breadcrumb > li")
-    title = menu[-1].text
+    title = menu[-1].text.replace("'", "'")
     category = menu[-2].find("a").get_text()
     description_block = html.find("#product_description + p")
     description = (
-        description_block.get_text() if description_block else "No description"
+        description_block.get_text().replace("'", "'")
+        if description_block
+        else "No description"
     )
     table_rows = html.select("tr > td")
     upc = table_rows[0].get_text()

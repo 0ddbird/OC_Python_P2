@@ -17,14 +17,12 @@ async def request_categories(session, first_url) -> Set[Tuple[str, str]]:
 
 
 async def get_category_urls(session, category, url):
-    # For one category index url
-    # print(f"get_category_urls, {url}")
     cat_home_html = await get_html(session, url)
     page_count = get_page_count(cat_home_html)
     if page_count > 1:
         category_urls = [
-            f"{url}page-{page_num}.html" for page_num in range(1, page_count
-                                                               + 1)
+            f"{url}page-{page_num}.html"
+            for page_num in range(1, page_count + 1)
         ]
     else:
         category_urls = [f"{url}index.html"]

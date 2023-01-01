@@ -15,11 +15,13 @@ def selectolax_parse(book_html: str, book_url: str) -> Book:
     num_count = slice(10, -10)
 
     menu = html.css("ul.breadcrumb > li")
-    title = menu[-1].text()
+    title = menu[-1].text().replace("'", "'")
     category = menu[-2].css_first("a").text()
     description_block = html.css_first("#product_description + p")
     description = (
-        description_block.text() if description_block else "No description"
+        description_block.text().replace("'", "'")
+        if description_block
+        else "No description"
     )
     table_rows = html.css("tr > td")
     upc = table_rows[0].text()
@@ -34,7 +36,7 @@ def selectolax_parse(book_html: str, book_url: str) -> Book:
     rating = RATINGS[rating_class]
     cover = html.css_first("#product_gallery img")
     cover_url = cover.attributes["src"].replace(
-        "../..", "https://books.toscrape.com/"
+        "../..", "https://books.toscrape.com"
     )
     cover_name = cover.attributes["alt"]
 

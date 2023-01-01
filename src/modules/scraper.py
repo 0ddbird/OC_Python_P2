@@ -16,8 +16,8 @@ async def get_html(session: Cs, url: str) -> str:
 async def get_urls_in_page(session: Cs, url: str) -> List[str]:
     html = await get_html(session, url)
     books_urls = parse_catalogue_page(html)
-    formatted_urls = [u.replace("../../..", "") for u in books_urls]
-    return formatted_urls
+    print(books_urls[0])
+    return books_urls
 
 
 async def get_books_urls(session: Cs, cat_pages_urls: List[str]) -> list[str]:
@@ -26,20 +26,21 @@ async def get_books_urls(session: Cs, cat_pages_urls: List[str]) -> list[str]:
         tasks.append(asyncio.create_task(get_urls_in_page(session, url)))
     url_lists = await asyncio.gather(*tasks)
     book_urls = list(itertools.chain(*url_lists))
-    return [f"https://books.toscrape.com/catalogue/{u}" for u in book_urls]
+    return book_urls
 
 
-async def get_book(session: Cs, url: str, path: str) -> Book:
+async def get_book(session: Cs, url: str, path: Path) -> Book:
     book_html = await get_html(session, url)
     book = build_book(book_html, url)
-    await download_cover(session, path, book.cover_url, book.cover_name,
-                         book.category)
-    print(f'downloaded {book.title}')
+    await download_cover(
+        session, path, book.cover_url, book.cover_name, book.category
+    )
+    print(f"downloaded {book.title}")
 
     return book
 
 
-async def get_books(session: Cs, urls: List[str], path: str) -> tuple[Book]:
+async def get_books(session: Cs, urls: List[str], path: Path) -> tuple[Book]:
     tasks = []
     for url in urls:
         tasks.append(asyncio.create_task(get_book(session, url, path)))

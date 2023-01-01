@@ -44,8 +44,13 @@ def parse_category_urls(html_str: str) -> Set[Tuple[str, str]] or None:
 
 
 def parse_catalogue_page(html_str: str) -> list[str]:
-    li = HTMLParser(html_str).css_first("section ol").css("li")
-    return [item.css_first("a").attributes["href"] for item in li]
+    li_elements = HTMLParser(html_str).css_first("section ol").css("li")
+
+    return [
+        f'https://books.toscrape.com/catalogue/' + li.css_first(
+            "a").attributes["href"].replace('../../../', '')
+        for li in li_elements
+    ]
 
 
 def build_book(book_html: str, book_url: str) -> Book:
