@@ -1,6 +1,8 @@
 from collections import namedtuple
 from selectolax.parser import HTMLParser
 
+from src.parser_engines.Parser import Parser
+
 RATINGS = {"One": 1, "Two": 2, "Three": 3, "Four": 4, "Five": 5}
 
 Book = namedtuple(
@@ -10,7 +12,7 @@ Book = namedtuple(
 )
 
 
-class SelectolaxParser:
+class SelectolaxParser(Parser):
     @staticmethod
     def parse_category_urls(html):
         categories = []
@@ -56,11 +58,11 @@ class SelectolaxParser:
         num_count = slice(10, -10)
 
         menu = html.css("ul.breadcrumb > li")
-        title = menu[-1].text().replace("'", "'")
+        title = menu[-1].text().replace("'", "")
         category = menu[-2].css_first("a").text()
         description_block = html.css_first("#product_description + p")
         description = (
-            description_block.text().replace("'", "'")
+            description_block.text().replace("'", "")
             if description_block
             else "No description"
         )
@@ -68,7 +70,7 @@ class SelectolaxParser:
         upc = table_rows[0].text()
         etp = table_rows[2].text()[1:]
         itp = table_rows[3].text()[1:]
-        stock = table_rows[5].text()[num_count]
+        stock = table_rows[5].text()[num_count].strip()
         rating_class = (
             html.css_first(".star-rating")
             .attributes["class"]
@@ -79,7 +81,7 @@ class SelectolaxParser:
         cover_url = cover.attributes["src"].replace(
             "../..", "https://books.toscrape.com"
         )
-        cover_name = cover.attributes["alt"]
+        cover_name = cover.attributes["alt"].replace("'", "")
 
         return Book(
             book_url,

@@ -4,6 +4,7 @@ import aiohttp
 
 from src.Models.FirstCataloguePage import FirstCataloguePage
 from src.Models.Scraper import Scraper, MenuChoice
+from src.parser_engines.bs_parser import BSParser
 from src.parser_engines.selectolax_parser import SelectolaxParser
 
 FIRST_URL = "https://books.toscrape.com/catalogue/page-1.html"
@@ -12,8 +13,9 @@ FIRST_URL = "https://books.toscrape.com/catalogue/page-1.html"
 async def main():
     scraper = Scraper()
     parser = SelectolaxParser()
-    # user_choice = scraper.prompt_scraping_mode()
-    user_choice = MenuChoice.all
+    # parser = BSParser()
+
+    user_choice = scraper.prompt_scraping_mode()
 
     if user_choice == MenuChoice.quit:
         exit(0)
@@ -22,6 +24,7 @@ async def main():
     dir_csv = scraper.make_directory("../exports/csv")
 
     async with aiohttp.ClientSession() as session:
+
         page = FirstCataloguePage(FIRST_URL, parser)
         page.set_context(session)
         await page.async_request_categories()

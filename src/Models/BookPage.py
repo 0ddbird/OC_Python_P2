@@ -18,11 +18,13 @@ class BookPage(Page):
             self.book = book
         return self.book
 
-    async def async_request_cover(self):
+    async def async_request_cover(self, index):
         async with self.session.get(self.book.cover_url) as resp:
             cover = await resp.read()
         letters_only_re = r"[^a-zA-Z0-9]"
         file_name = re.sub(letters_only_re, "_", self.book.cover_name)
-        file_path = self.cover_path / f"{self.book.category}/{file_name}.jpg"
+        file_path = (
+            self.cover_path / f"{self.book.category}/{index}_{file_name}.jpg"
+        )
         with open(file_path, "wb") as f:
             f.write(cover)

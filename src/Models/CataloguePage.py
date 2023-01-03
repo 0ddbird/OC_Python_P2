@@ -23,17 +23,17 @@ class CataloguePage(Page):
 
     async def async_get_books(self, path: Path) -> tuple[Book]:
         tasks = []
-        for url in self.books_urls:
-            tasks.append(asyncio.create_task(self._get_book(url, path)))
+        for index, url in enumerate(self.books_urls):
+            tasks.append(asyncio.create_task(self._get_book(url, index, path)))
         books = await asyncio.gather(*tasks)
         return books
 
-    async def _get_book(self, url: str, path: Path) -> Book:
+    async def _get_book(self, url: str, index: int, path: Path) -> Book:
         book_page = BookPage(url, self.parser, path)
         book_page.set_context(self.session)
         await book_page.async_request()
         book = book_page.get_book()
         book_page.set_context(self.session)
-        await book_page.async_request_cover()
+        await book_page.async_request_cover(index)
         print(f"downloaded {book.title}")
         return book
