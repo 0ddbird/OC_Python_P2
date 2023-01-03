@@ -1,31 +1,19 @@
-from collections import namedtuple
 from selectolax.parser import HTMLParser
-
 from src.parser_engines.Parser import Parser
-
-RATINGS = {"One": 1, "Two": 2, "Three": 3, "Four": 4, "Five": 5}
-
-Book = namedtuple(
-    "Book",
-    "url upc title itp etp stock description "
-    "category rating cover_url cover_name",
-)
+from src.parser_engines.bs_parser import Book
 
 
 class SelectolaxParser(Parser):
     @staticmethod
     def parse_category_urls(html):
         categories = []
-
-        cat_anchor_tags = HTMLParser(html).css(
-            ".nav-list > li > ul > li " "> a"
-        )
-        for anchor_tag in cat_anchor_tags:
-            cat_name = anchor_tag.text().strip()
-            first_page_url = anchor_tag.attributes["href"]
-            if not first_page_url:
+        anchors = HTMLParser(html).css(".nav-list > li > ul > li > a")
+        for anchor in anchors:
+            cat_name = anchor.text().strip()
+            url = anchor.attributes["href"]
+            if not url:
                 return []
-            categories.append((cat_name, first_page_url))
+            categories.append((cat_name, url))
         return categories
 
     @staticmethod
@@ -38,22 +26,19 @@ class SelectolaxParser(Parser):
         page_books_count = int(dom_count[-1].text())
         all_books_count = int(dom_count[0].text())
         pages_count, rest = divmod(all_books_count, page_books_count)
-        if rest == 0:
-            return pages_count
-        return pages_count + 1
+        return pages_count if rest == 0 else pages_count + 1
 
     @staticmethod
     def parse_books_urls(html_str: str) -> list[str]:
-        li_elements = HTMLParser(html_str).css_first("section ol").css("li")
+        lis = HTMLParser(html_str).css_first("section ol").css("li")
 
         return [
             f"https://books.toscrape.com/catalogue/"
             + li.css_first("a").attributes["href"].replace("../../../", "")
-            for li in li_elements
+            for li in lis
         ]
 
-    @staticmethod
-    def parse_book_page(book_html: str, book_url: str) -> Book:
+    def parse_book_page(self, book_html: str, book_url: str) -> Book:
         html = HTMLParser(book_html).css("div.page_inner")[1]
         num_count = slice(10, -10)
 
@@ -76,14 +61,14 @@ class SelectolaxParser(Parser):
             .attributes["class"]
             .replace("star-rating ", "")
         )
-        rating = RATINGS[rating_class]
+        rating = self._ratings[rating_class]
         cover = html.css_first("#product_gallery img")
         cover_url = cover.attributes["src"].replace(
             "../..", "https://books.toscrape.com"
         )
         cover_name = cover.attributes["alt"].replace("'", "")
 
-        return Book(
+        return self.Book(
             book_url,
             upc,
             title,
