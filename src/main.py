@@ -2,46 +2,47 @@ import sys
 import asyncio
 import aiohttp
 
+from src.Models.FirstCataloguePage import FirstCataloguePage
+from src.Models.Scraper import Scraper, MenuChoice
+from src.parser_engines.selectolax_parser import SelectolaxParser
 
-from src.modules.export import make_directory, export_csv
-from src.modules.scrape_all import get_all_catalogue
-from src.modules.scrape_categories import (
-    request_categories,
-    get_catalogue_selection,
-)
-from src.modules.scraper import get_books_urls, get_books
-from src.views.menu import (
-    prompt_scraping_mode,
-    prompt_category_selection,
-    MenuChoice,
-)
+FIRST_URL = "https://books.toscrape.com/catalogue/page-1.html"
 
 
-async def main() -> None:
+async def main():
+    scraper = Scraper()
+    parser = SelectolaxParser()
+    # user_choice = scraper.prompt_scraping_mode()
+    user_choice = MenuChoice.all
+
+    if user_choice == MenuChoice.quit:
+        exit(0)
+
+    dir_covers = scraper.make_directory("../exports/covers")
+    dir_csv = scraper.make_directory("../exports/csv")
+
     async with aiohttp.ClientSession() as session:
-        covers_path = make_directory("../exports/covers")
-        csv_path = make_directory("../exports/csv")
-        first_url = "https://books.toscrape.com/catalogue/page-1.html"
-
-        user_choice = prompt_scraping_mode()
-        if user_choice == MenuChoice.quit:
-            exit(0)
-
-        all_categories = await request_categories(session, first_url)
+        page = FirstCataloguePage(FIRST_URL, parser)
+        page.set_context(session)
+        await page.async_request_categories()
+        scraper.set_categories(page.all_categories)
 
         if user_choice == MenuChoice.all:
-            selected_categories = all_categories
-            urls = await get_all_catalogue(session, first_url)
-        else:
-            selected_categories = prompt_category_selection(all_categories)
-            urls = await get_catalogue_selection(session, selected_categories)
+            await page.get_all_categories_urls()
+            scraper.set_selected_categories(page.all_categories)
 
-        for cat_name, _ in selected_categories:
-            make_directory(cat_name, covers_path)
+        elif user_choice == MenuChoice.category:
+            selected_categories = scraper.prompt_selection()
+            scraper.set_selected_categories(selected_categories)
+            await page.get_categories_urls(scraper.selected_categories)
 
-        books_urls = await get_books_urls(session, urls)
-        books = await get_books(session, books_urls, covers_path)
-    export_csv(csv_path, books)
+        for category_name, _ in scraper.selected_categories:
+            scraper.make_directory(category_name, dir_covers)
+
+        await page.get_books_urls()
+        books = await page.async_get_books(dir_covers)
+
+    scraper.export_csv(dir_csv, books)
 
 
 if __name__ == "__main__":
