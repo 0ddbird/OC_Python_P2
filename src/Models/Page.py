@@ -5,8 +5,6 @@ from aiohttp import ClientSession
 class Page(ABC):
     def __init__(self, url: str, parser):
         self.url = url
-        self.response = None
-        self.status_code = None
         self.html = None
         self.session = None
         self.parser = parser

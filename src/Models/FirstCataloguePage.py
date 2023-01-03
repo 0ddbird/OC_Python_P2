@@ -9,8 +9,6 @@ class FirstCataloguePage(CataloguePage):
         super().__init__(url, parser)
         self.url = url
         self.parser = parser
-        self.response = None
-        self.status_code = None
         self.html = None
         self.all_categories = None
         self.categories_urls = None
