@@ -14,7 +14,7 @@ class CataloguePage(Page):
         self.parser = parser
         self.html = None
 
-    def get_books_urls(self):
+    def get_books_urls(self) -> list[str]:
         if self.html is None:
             print("No HTML!")
         else:
@@ -34,6 +34,6 @@ class CataloguePage(Page):
         await book_page.async_request()
         book = book_page.get_book()
         book_page.set_context(self.session)
-        await book_page.async_request_cover()
+        await book_page.async_download_cover()
         print(f"downloaded {book.title}")
         return book

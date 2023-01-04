@@ -10,10 +10,16 @@ class Page(ABC):
         self.parser = parser
         self.books_urls = None
 
-    def set_context(self, session: ClientSession):
+    urls = {
+        "base": "https://books.toscrape.com/catalogue",
+        "first": "https://books.toscrape.com/catalogue/page-1.html",
+        "page_frag": "https://books.toscrape.com/catalogue/page-",
+    }
+
+    def set_context(self, session: ClientSession) -> None:
         self.session = session
 
-    async def async_request(self):
+    async def async_request(self) -> str:
         async with self.session.get(self.url) as resp:
             self.html = await resp.text()
             return self.html

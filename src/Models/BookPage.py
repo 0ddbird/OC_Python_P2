@@ -1,6 +1,7 @@
 import re
 
 from src.Models.Page import Page
+from src.parser_engines.bs_parser import Book
 
 
 class BookPage(Page):
@@ -12,7 +13,7 @@ class BookPage(Page):
         self.session = None
         self.book = None
 
-    def get_book(self):
+    def get_book(self) -> Book:
         if self.book is None:
             book = self.parser.parse_book_page(self.html, self.url)
             self.book = book
@@ -30,7 +31,7 @@ class BookPage(Page):
                 yield f"({inc})"
                 inc += 1
 
-    async def async_request_cover(self):
+    async def async_download_cover(self) -> None:
         async with self.session.get(self.book.cover_url) as resp:
             cover = await resp.read()
         letters_only_re = r"[^a-zA-Z0-9 ]"
