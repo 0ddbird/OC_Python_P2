@@ -15,12 +15,9 @@ class Scraper:
         self.dir_csv = None
         self.dir_covers = None
         self.catalogue = None
-        self.categories = None
+        self.user_selection = None
         self.categories_urls = None
         self.input_result = {"value": set(), "valid": False, "message": ""}
-
-    def get_length(self):
-        return len(self.categories)
 
     def set_categories(self, categories: list[Category]) -> None:
         self.catalogue = categories
@@ -42,7 +39,7 @@ class Scraper:
         self.dir_csv = self.make_directory(f"{rel_path}csv")
 
     def make_covers_subdirectories(self):
-        for category_name, _ in self.categories:
+        for category_name, _ in self.user_selection:
             self.make_directory(category_name, self.dir_covers)
 
     @staticmethod
@@ -120,7 +117,7 @@ class Scraper:
                 print(msg)
                 input("Press Enter to try again")
             else:
-                self.categories = [
+                self.user_selection = [
                     category
                     for category in catalogue
                     if catalogue.index(category) + 1 in selected

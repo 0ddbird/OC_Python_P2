@@ -12,7 +12,7 @@ class Catalogue(CataloguePage):
         self.url = url
         self.parser = parser
         self.html = None
-        self.all_categories = None
+        self.categories = None
         self.categories_urls = None
         self.books_urls = None
         self.size = None
@@ -21,7 +21,7 @@ class Catalogue(CataloguePage):
         if self.html is None:
             self.html = await self.async_request()
         categories = self.parser.parse_category_urls(self.html)
-        self.all_categories = categories
+        self.categories = categories
         self.size = len(categories)
 
     async def async_get_categories_urls(
