@@ -1,6 +1,7 @@
 from selectolax.parser import HTMLParser
-from src.parser_engines.Parser import Parser
-from src.parser_engines.bs_parser import Book
+
+from src.Typing.types import Book
+from src.Parser.Parser import Parser
 
 
 class SelectolaxParser(Parser):
@@ -17,7 +18,7 @@ class SelectolaxParser(Parser):
         return categories
 
     @staticmethod
-    def parse_page_count(html):
+    def parse_page_count(html) -> int:
         dom_count = (
             HTMLParser(html).css_first("form.form-horizontal").css("strong")
         )
@@ -33,7 +34,7 @@ class SelectolaxParser(Parser):
         lis = HTMLParser(html_str).css_first("section ol").css("li")
 
         return [
-            f"https://books.toscrape.com/catalogue/"
+            "https://books.toscrape.com/catalogue/"
             + li.css_first("a").attributes["href"].replace("../../../", "")
             for li in lis
         ]
@@ -68,7 +69,7 @@ class SelectolaxParser(Parser):
         )
         cover_name = cover.attributes["alt"].replace("'", "")
 
-        return self.Book(
+        return Book(
             book_url,
             upc,
             title,

@@ -2,13 +2,14 @@ from pathlib import Path
 
 import asyncio
 
-from src.Models.BookPage import BookPage
-from src.Models.Page import Page
-from src.parser_engines.selectolax_parser import Book
+from src.Typing.types import Book
+from src.Pages.BookPage import BookPage
+from src.Pages.Page import Page
+from src.Parser import Parser
 
 
 class CataloguePage(Page):
-    def __init__(self, url: str, parser):
+    def __init__(self, url: str, parser: Parser):
         super().__init__(url, parser)
         self.url = url
         self.parser = parser
@@ -35,5 +36,4 @@ class CataloguePage(Page):
         book = book_page.get_book()
         book_page.set_context(self.session)
         await book_page.async_download_cover()
-        print(f"downloaded {book.title}")
         return book

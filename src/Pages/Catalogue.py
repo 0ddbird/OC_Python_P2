@@ -1,11 +1,13 @@
 import asyncio
 import itertools
 
-from src.Models.CataloguePage import CataloguePage
+from src.Typing.types import Category, Url
+from src.Pages.CataloguePage import CataloguePage
+from src.Parser.Parser import Parser
 
 
 class Catalogue(CataloguePage):
-    def __init__(self, url: str, parser):
+    def __init__(self, url: Url, parser: Parser):
         super().__init__(url, parser)
         self.url = url
         self.parser = parser
@@ -13,12 +15,22 @@ class Catalogue(CataloguePage):
         self.all_categories = None
         self.categories_urls = None
         self.books_urls = None
+        self.size = None
 
     async def async_request_categories(self) -> None:
         if self.html is None:
             self.html = await self.async_request()
         categories = self.parser.parse_category_urls(self.html)
         self.all_categories = categories
+        self.size = len(categories)
+
+    async def async_get_categories_urls(
+        self, category_urls: list[Category]
+    ) -> None:
+        if len(category_urls) == self.size:
+            await self.async_get_all_categories_urls()
+        else:
+            await self.async_get_selected_categories_urls(category_urls)
 
     async def async_get_all_categories_urls(self) -> None:
         if self.html is None:
@@ -30,8 +42,8 @@ class Catalogue(CataloguePage):
         ]
         self.categories_urls = urls
 
-    async def async_get_categories_urls(
-        self, category_urls: list[tuple[str, str]]
+    async def async_get_selected_categories_urls(
+        self, category_urls: list[Category]
     ) -> None:
         coros = []
         for _, url in category_urls:
@@ -42,7 +54,7 @@ class Catalogue(CataloguePage):
         f_urls = [u.replace("../../..", self.urls["base"]) for u in urls]
         self.categories_urls = f_urls
 
-    async def _get_category_urls(self, url: str) -> list[str]:
+    async def _get_category_urls(self, url: Url) -> list[Url]:
         page = CataloguePage(url, self.parser)
         page.set_context(self.session)
         html = await page.async_request()
@@ -62,7 +74,7 @@ class Catalogue(CataloguePage):
         books_urls = list(itertools.chain(*url_lists))
         self.books_urls = books_urls
 
-    async def _get_urls_in_page(self, url: str) -> str:
+    async def _get_urls_in_page(self, url: Url) -> Url:
         page = CataloguePage(url, self.parser)
         page.set_context(self.session)
         await page.async_request()

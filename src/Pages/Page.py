@@ -1,9 +1,12 @@
 from abc import ABC
 from aiohttp import ClientSession
 
+from src.Parser.Parser import Parser
+from src.Typing.types import Url
+
 
 class Page(ABC):
-    def __init__(self, url: str, parser):
+    def __init__(self, url: Url, parser: Parser):
         self.url = url
         self.html = None
         self.session = None

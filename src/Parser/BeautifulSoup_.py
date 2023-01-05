@@ -1,16 +1,7 @@
-from collections import namedtuple
-from bs4 import BeautifulSoup
 import re
-
-from src.parser_engines.Parser import Parser
-
-RATINGS = {"One": 1, "Two": 2, "Three": 3, "Four": 4, "Five": 5}
-
-Book = namedtuple(
-    "Book",
-    "url upc title itp etp stock description "
-    "category rating cover_url cover_name",
-)
+from bs4 import BeautifulSoup
+from src.Typing.types import Book
+from src.Parser.Parser import Parser
 
 
 class BSParser(Parser):
@@ -51,7 +42,7 @@ class BSParser(Parser):
         )
 
         return [
-            f"https://books.toscrape.com/catalogue/"
+            "https://books.toscrape.com/catalogue/"
             + li.select_one("a").attrs["href"].replace("../../../", "")
             for li in lis
         ]
@@ -83,7 +74,7 @@ class BSParser(Parser):
             "../..", "https://books.toscrape.com/"
         )
         cover_name = cover["alt"]
-        return self.Book(
+        return Book(
             book_url,
             upc,
             title,

@@ -1,15 +1,12 @@
 from abc import ABC, abstractmethod
-from collections import namedtuple
+from src.Typing.types import Book
 
 
 class Parser(ABC):
     _ratings = {"One": 1, "Two": 2, "Three": 3, "Four": 4, "Five": 5}
 
-    Book = namedtuple(
-        "Book",
-        "url upc title itp etp stock description "
-        "category rating cover_url cover_name",
-    )
+    def __repr__(self):
+        return f"Parser(ABC)"
 
     @staticmethod
     @abstractmethod

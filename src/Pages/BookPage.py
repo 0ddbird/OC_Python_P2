@@ -1,17 +1,18 @@
 import re
 
-from src.Models.Page import Page
-from src.parser_engines.bs_parser import Book
+from src.Typing.types import Book, Url
+from src.Pages.Page import Page
 
 
 class BookPage(Page):
-    def __init__(self, url, parser, path):
+    def __init__(self, url: Url, parser, path, **kwargs):
         super().__init__(url, parser)
         self.url = url
         self.parser = parser
         self.cov_path = path
         self.session = None
         self.book = None
+        self.verbose = "verbose" in kwargs.values()
 
     def get_book(self) -> Book:
         if self.book is None:
