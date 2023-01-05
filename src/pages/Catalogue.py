@@ -1,9 +1,9 @@
 import asyncio
 import itertools
 
-from src.Typing.types import Category, Url
-from src.Pages.CataloguePage import CataloguePage
-from src.Parser.Parser import Parser
+from src.typing.types import Category, Url
+from src.pages.CataloguePage import CataloguePage
+from src.parser.Parser import Parser
 
 
 class Catalogue(CataloguePage):
@@ -74,7 +74,7 @@ class Catalogue(CataloguePage):
         books_urls = list(itertools.chain(*url_lists))
         self.books_urls = books_urls
 
-    async def _get_urls_in_page(self, url: Url) -> Url:
+    async def _get_urls_in_page(self, url: Url) -> list[Url]:
         page = CataloguePage(url, self.parser)
         page.set_context(self.session)
         await page.async_request()

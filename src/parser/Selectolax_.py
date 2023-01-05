@@ -1,7 +1,7 @@
 from selectolax.parser import HTMLParser
 
-from src.Typing.types import Book
-from src.Parser.Parser import Parser
+from src.typing.types import Book
+from src.parser.Parser import Parser
 
 
 class SelectolaxParser(Parser):

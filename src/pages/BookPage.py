@@ -1,7 +1,7 @@
 import re
 
-from src.Typing.types import Book, Url
-from src.Pages.Page import Page
+from src.typing.types import Book, Url
+from src.pages.Page import Page
 
 
 class BookPage(Page):

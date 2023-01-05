@@ -1,13 +1,22 @@
 import csv
 from pathlib import Path
 
-from src.Typing.types import Category, Url, Book
+from src.typing.types import Category, Url, Book
 
 ERROR_MESSAGES = {
     "char": "Forbidden character",
     "boundaries": "Category number is out of boundaries",
     "range_format": "Select a range between 2 numbers separated by a '-'",
 }
+
+margin = 20
+ASCII = (
+    f"{' ' * margin + '    _______'}\n"
+    f"{' ' * margin + '   /      /,'}\n"
+    f"{' ' * margin + '  / B.W. //'}\n"
+    f"{' ' * margin + ' /______//'}\n"
+    f"{' ' * margin + '(______(/'}\n"
+)
 
 
 class Scraper:
@@ -98,18 +107,35 @@ class Scraper:
             self.input_result["valid"] = True
         return self.input_result
 
+    @staticmethod
+    def split_list_evenly(lst, n):
+        for i in range(0, len(lst), n):
+            yield lst[i : i + n]
+
     def prompt_selection(self):
+        def ansi(s):
+            return f"\033[{s}m"
+
+        clr = ansi("38;2;241;196;15")
+        reset = ansi("")
         while True:
             catalogue = self.catalogue
             last = len(catalogue)
             category_names = [category[0] for category in catalogue]
+            print(
+                f"{'_' * 54}\n"
+                f"{ASCII}"
+                "Welcome to BookWorm, a scraper for books.toscrape.com!\n"
+                f"{'_' * 54}\n"
+            )
+            input(f"Press{clr} Enter{reset} to see the " "catalogue...")
             for index, category_name in enumerate(category_names):
-                print(f"{index + 1}: {category_name}")
+                print(f"{clr}{index + 1}{reset}: {category_name}")
             user_input = input(
                 "Please type each category number "
                 "you want to select separated by a comma.\n"
-                "you can also set a range with a '-' \n"
-                "ex: 1, 4-8, 10, 34-45, 50\n"
+                "you can also set one or multiple range(s) with '-' \n"
+                f"ex: {clr}1, 4-8, 10, 30-45{reset}\n>_"
             )
             selected, valid, msg = self.decode_input(user_input, last).values()
 

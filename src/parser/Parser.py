@@ -1,12 +1,12 @@
 from abc import ABC, abstractmethod
-from src.Typing.types import Book
+from src.typing.types import Book
 
 
 class Parser(ABC):
     _ratings = {"One": 1, "Two": 2, "Three": 3, "Four": 4, "Five": 5}
 
     def __repr__(self):
-        return f"Parser(ABC)"
+        return "Parser(ABC)"
 
     @staticmethod
     @abstractmethod

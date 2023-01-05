@@ -1,10 +1,10 @@
 import re
 from bs4 import BeautifulSoup
-from src.Typing.types import Book
-from src.Parser.Parser import Parser
+from src.typing.types import Book
+from src.parser.Parser import Parser
 
 
-class BSParser(Parser):
+class BeautifulSoupParser(Parser):
     @staticmethod
     def parse_category_urls(html):
         categories = []
