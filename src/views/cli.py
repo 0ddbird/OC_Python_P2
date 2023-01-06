@@ -3,14 +3,21 @@ from src.parser.Selectolax_ import SelectolaxParser
 from strenum import StrEnum
 
 
-margin = 20
+def pick_parser_from_cli(args: list):
+    if "-bs4" in args:
+        return BeautifulSoupParser()
+    return SelectolaxParser()
+
+
+# ANSI constants and functions
+MARGIN = 20 * " "
 SEPARATOR = f"{'=' * 54}"
 LOGO = (
-    f"{' ' * margin + '    _______'}\n"
-    f"{' ' * margin + '   / Book //'}\n"
-    f"{' ' * margin + '  / Worm //'}\n"
-    f"{' ' * margin + ' /______//'}\n"
-    f"{' ' * margin + '(______(/'}\n"
+    f"{MARGIN + '    _______'}\n"
+    f"{MARGIN + '   / Book //'}\n"
+    f"{MARGIN + '  / Worm //'}\n"
+    f"{MARGIN + ' /______//'}\n"
+    f"{MARGIN + '(______(/'}\n"
 )
 
 
@@ -18,12 +25,6 @@ class AnsiClr(StrEnum):
     GREEN = "38;2;26;188;156"
     YELLOW = "38;2;241;196;15"
     GREY = "38;2;236;240;241"
-
-
-def pick_parser_from_cli(args: list):
-    if "-bs4" in args:
-        return BeautifulSoupParser()
-    return SelectolaxParser()
 
 
 def ansi_esc(code):
@@ -34,6 +35,7 @@ def clr(color: AnsiClr, string):
     return f"{ansi_esc(color)}{string}\033[m"
 
 
+# CLI menu
 def print_welcome():
     print(
         f"{SEPARATOR}"
@@ -88,6 +90,7 @@ def get_selection_input():
     )
 
 
+# Progress bar
 def log_progress(done: int, total: int):
     progress = int(done / total * 100)
     block_char = "\u2588"
