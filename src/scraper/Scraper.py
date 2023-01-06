@@ -2,6 +2,11 @@ import csv
 from pathlib import Path
 
 from src.typing.types import Category, Url, Book
+from src.views.cli import (
+    print_categories,
+    print_welcome,
+    get_selection_input,
+)
 
 ERROR_MESSAGES = {
     "char": "Forbidden character",
@@ -9,18 +14,10 @@ ERROR_MESSAGES = {
     "range_format": "Select a range between 2 numbers separated by a '-'",
 }
 
-margin = 20
-ASCII = (
-    f"{' ' * margin + '    _______'}\n"
-    f"{' ' * margin + '   /      /,'}\n"
-    f"{' ' * margin + '  / B.W. //'}\n"
-    f"{' ' * margin + ' /______//'}\n"
-    f"{' ' * margin + '(______(/'}\n"
-)
-
 
 class Scraper:
     def __init__(self):
+        self.dir_base = None
         self.dir_csv = None
         self.dir_covers = None
         self.catalogue = None
@@ -41,9 +38,11 @@ class Scraper:
         else:
             target_path = Path.cwd() / f"{dir_name}"
         target_path.mkdir(parents=True, exist_ok=True)
-        return target_path
+
+        return target_path.resolve()
 
     def make_directories(self, rel_path: str):
+        self.dir_base = self.make_directory(rel_path)
         self.dir_covers = self.make_directory(f"{rel_path}covers")
         self.dir_csv = self.make_directory(f"{rel_path}csv")
 
@@ -79,7 +78,6 @@ class Scraper:
             right_str, last
         ):
             return False
-
         return True
 
     def decode_input(self, user_input: str, last: int):
@@ -107,36 +105,15 @@ class Scraper:
             self.input_result["valid"] = True
         return self.input_result
 
-    @staticmethod
-    def split_list_evenly(lst, n):
-        for i in range(0, len(lst), n):
-            yield lst[i : i + n]
-
     def prompt_selection(self):
-        def ansi(s):
-            return f"\033[{s}m"
-
-        clr = ansi("38;2;241;196;15")
-        reset = ansi("")
         while True:
             catalogue = self.catalogue
-            last = len(catalogue)
             category_names = [category[0] for category in catalogue]
-            print(
-                f"{'_' * 54}\n"
-                f"{ASCII}"
-                "Welcome to BookWorm, a scraper for books.toscrape.com!\n"
-                f"{'_' * 54}\n"
-            )
-            input(f"Press{clr} Enter{reset} to see the " "catalogue...")
-            for index, category_name in enumerate(category_names):
-                print(f"{clr}{index + 1}{reset}: {category_name}")
-            user_input = input(
-                "Please type each category number "
-                "you want to select separated by a comma.\n"
-                "you can also set one or multiple range(s) with '-' \n"
-                f"ex: {clr}1, 4-8, 10, 30-45{reset}\n>_"
-            )
+            print_welcome()
+            print_categories(category_names, True)
+
+            user_input = get_selection_input()
+            last = len(catalogue)
             selected, valid, msg = self.decode_input(user_input, last).values()
 
             if not valid:

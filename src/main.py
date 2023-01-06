@@ -4,7 +4,7 @@ import aiohttp
 
 from src.pages.Catalogue import Catalogue
 from src.scraper.Scraper import Scraper
-from src.views.cli import pick_from_cli
+from src.views.cli import pick_parser_from_cli
 
 FIRST_URL = "https://books.toscrape.com/catalogue/page-1.html"
 
@@ -13,7 +13,7 @@ async def main():
 
     scraper = Scraper()
     scraper.make_directories("../exports/")
-    parser = pick_from_cli(sys.argv[1:])
+    parser = pick_parser_from_cli(sys.argv[1:])
 
     async with aiohttp.ClientSession() as session:
 
@@ -29,6 +29,7 @@ async def main():
         books = await catalogue.async_get_books(scraper.dir_covers)
 
     scraper.export_csv(books)
+    print(f"Books data downloaded to {scraper.dir_base}")
 
 
 if __name__ == "__main__":
