@@ -82,13 +82,17 @@ class Scraper:
 
     def decode_input(self, user_input: str, last: int):
         segments = [sub_str.strip() for sub_str in user_input.split(",")]
+
         for segment in segments:
+
+            # One or two digits category number
             if len(segment) < 3:
                 if not self._is_valid_str(segment, last):
                     return self.input_result
                 else:
                     self.input_result["value"].add(int(segment))
 
+            # Dash separated category numbers
             elif len(segment) < 6 and "-" in segment:
                 if not self._is_valid_range(segment, last):
                     return self.input_result
@@ -111,7 +115,6 @@ class Scraper:
             category_names = [category[0] for category in catalogue]
             print_welcome()
             print_categories(category_names, True)
-
             user_input = get_selection_input()
             last = len(catalogue)
             selected, valid, msg = self.decode_input(user_input, last).values()
