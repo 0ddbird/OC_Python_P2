@@ -112,25 +112,23 @@ class Scraper:
     def prompt_selection(self):
         while True:
             catalogue = self.catalogue
-            self.user_selection = self.catalogue
-            break
-            # category_names = [category[0] for category in catalogue]
-            # print_welcome()
-            # print_categories(category_names, True)
-            # user_input = get_selection_input()
-            # last = len(catalogue)
-            # selected, valid, msg = self.decode_input(user_input, last).values()
-            #
-            # if not valid:
-            #     print(msg)
-            #     input("Press Enter to try again")
-            # else:
-            #     self.user_selection = [
-            #         category
-            #         for category in catalogue
-            #         if catalogue.index(category) + 1 in selected
-            #     ]
-            #     break
+            category_names = [category[0] for category in catalogue]
+            print_welcome()
+            print_categories(category_names, True)
+            user_input = get_selection_input()
+            last = len(catalogue)
+            selected, valid, msg = self.decode_input(user_input, last).values()
+
+            if not valid:
+                print(msg)
+                input("Press Enter to try again")
+            else:
+                self.user_selection = [
+                    category
+                    for category in catalogue
+                    if catalogue.index(category) + 1 in selected
+                ]
+                break
 
     def export_csv(self, books: tuple[Book]) -> None:
         target_path = Path.cwd() / ".." / "exports" / f"{self.dir_csv}"

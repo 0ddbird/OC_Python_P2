@@ -180,8 +180,14 @@ And in use case #2:
 ### <a id='4_3_b'>4.3.b - Improvements to the CPU bound part</a>
 
 In order to improve the parsing time, **_BeautifulSoup4_** has been replaced by **_Selectolax_**, a parser package based on **_Modest_** a C parser.  
-On the same machine, this resulted in a ~15s improvement to run the whole use case #1.
 
+![graph2](./assets/bs4.png)  
+**_cProfile call graph for BeautifulSoup4 parsing 1000 books_**  
+
+![graph3](./assets/selectolax.png)  
+**_cProfile call graph for Selectolax parsing 1000 books_**
+
+On the same machine, this resulted in a ~15s improvement to run the whole use case #1.
 
 ### <a id='4_3_c'>4.3.c - Third iteration profiling</a>
 ~ 50% of the execution time spent between 2 functions:
@@ -196,9 +202,7 @@ On the same machine, this resulted in a ~15s improvement to run the whole use ca
 ![graph](./assets/P280.png)
 **_cProfile call graph with asyncio / Selectolax_**
 
-![graph2](./assets/graph_bs4.png)  
-**_cProfile call graph with asyncio / BeautifulSoup4_**  
-Parsing time: 15000ms for BS4 vs 300ms for Selectolax
+
 
 [:arrow_up: Back to top](#top)
 ___
