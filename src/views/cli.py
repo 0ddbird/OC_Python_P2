@@ -4,9 +4,9 @@ from strenum import StrEnum
 
 
 def pick_parser_from_cli(args: list):
-    if "-bs4" in args:
-        return BeautifulSoupParser()
-    return SelectolaxParser()
+    # if "-bs4" in args:
+    return BeautifulSoupParser()
+    # return SelectolaxParser()
 
 
 # ANSI constants and functions
