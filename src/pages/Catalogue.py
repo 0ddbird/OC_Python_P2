@@ -1,7 +1,7 @@
 import asyncio
 import itertools
 
-from src.typing.types import Category, Url
+from src.types.types import Category, Url
 from src.pages.CataloguePage import CataloguePage
 from src.parser.Parser import Parser
 

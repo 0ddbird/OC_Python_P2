@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from src.typing.types import Book
+from src.types.types import Book
 
 
 class Parser(ABC):

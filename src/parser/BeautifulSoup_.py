@@ -1,6 +1,6 @@
 import re
 from bs4 import BeautifulSoup
-from src.typing.types import Book
+from src.types.types import Book
 from src.parser.Parser import Parser
 
 

@@ -1,7 +1,7 @@
 import csv
 from pathlib import Path
 
-from src.typing.types import Category, Url, Book
+from src.types.types import Category, Url, Book
 from src.views.cli import (
     print_categories,
     print_welcome,

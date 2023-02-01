@@ -2,7 +2,7 @@ import time
 from pathlib import Path
 import asyncio
 
-from src.typing.types import Book
+from src.types.types import Book
 from src.pages.BookPage import BookPage
 from src.pages.Page import Page
 from src.parser import Parser

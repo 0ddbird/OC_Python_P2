@@ -1,6 +1,6 @@
 from selectolax.parser import HTMLParser
 
-from src.typing.types import Book
+from src.types.types import Book
 from src.parser.Parser import Parser
 
 

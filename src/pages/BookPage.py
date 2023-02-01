@@ -1,6 +1,6 @@
 import re
 
-from src.typing.types import Book, Url
+from src.types.types import Book, Url
 from src.pages.Page import Page
 
 
