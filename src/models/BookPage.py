@@ -33,7 +33,7 @@ class BookPage(Page):
                 inc += 1
 
     async def async_download_cover(self) -> None:
-        async with self.session.get(self.book.cover_url) as resp:
+        async with self.session.get(self.book.image_url) as resp:
             cover = await resp.read()
         letters_only_re = r"[^a-zA-Z0-9 ]"
         f_name = re.sub(letters_only_re, "_", self.book.cover_name)

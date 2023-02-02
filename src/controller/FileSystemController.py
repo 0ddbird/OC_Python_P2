@@ -30,10 +30,13 @@ class FileSystemController:
 
     def export_csv(self, book_list: list[Book]) -> None:
         category_name = book_list[0].category
-        target_path = Path.cwd()/ ".."/ "exports"/ f"{self.dir_csv}"
+        target_path = Path.cwd() / ".." / "exports" / f"{self.dir_csv}"
         target_path.mkdir(parents=True, exist_ok=True)
         with open(
-            target_path / f"{category_name}.csv", "w", encoding="utf-8", newline=""
+            target_path / f"{category_name}.csv",
+            "w",
+            encoding="utf-8",
+            newline="",
         ) as f:
             writer = csv.writer(f)
             writer.writerow(book_list[0]._fields)
