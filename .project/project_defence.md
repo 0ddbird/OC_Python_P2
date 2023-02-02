@@ -84,7 +84,7 @@ def get_pages_count():
     page_books_count = 20 # hardcoded for example
     pages_count, rest = divmod(all_books_count, page_books_count)
     return pages_count if rest == 0 else pages_count + 1
-# get_pages_count() returns 4 (20 books * 3 pages + 5 books -> 1 additional page)
+# get_pages_count() returns 4 (20 books * 3 models + 5 books -> 1 additional page)
 ```
 And take advantage of the constant URL structure to generate URLS like this:
 
