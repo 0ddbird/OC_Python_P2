@@ -2,34 +2,29 @@ import sys
 import asyncio
 import aiohttp
 
-from src.pages.Catalogue import Catalogue
-from src.scraper.Scraper import Scraper
-from src.views.cli import pick_parser_from_cli
+from controllers.Controller import Controller
 
 FIRST_URL = "https://books.toscrape.com/catalogue/page-1.html"
 
 
 async def main():
 
-    scraper = Scraper()
-    scraper.make_directories("../exports/")
-    parser = pick_parser_from_cli(sys.argv[1:])
+    app = Controller(FIRST_URL)
+    app.select_parser(sys.argv[1:])
+    app.make_directories("../exports/")
 
     async with aiohttp.ClientSession() as session:
+        app.set_context(session)
+        app.set_catalogue()
+        await app.async_get_categories()
+        app.prompt_selection()
+        await app.async_get_cat_urls()
+        app.make_covers_subdirectories()
+        await app.async_get_books_urls()
+        await app.async_get_books()
 
-        catalogue = Catalogue(FIRST_URL, parser)
-        catalogue.set_context(session)
-        await catalogue.async_request_categories()
-        scraper.set_categories(catalogue.categories)
-
-        scraper.prompt_selection()
-        await catalogue.async_get_categories_urls(scraper.user_selection)
-        scraper.make_covers_subdirectories()
-        await catalogue.async_get_books_urls()
-        books = await catalogue.async_get_books(scraper.dir_covers)
-
-    scraper.export_csv(books)
-    print(f"Books data downloaded to {scraper.dir_base}")
+    app.export_csv()
+    print(f"Books data downloaded to {app.dir_base}")
 
 
 if __name__ == "__main__":

@@ -1,9 +1,9 @@
 import asyncio
 import itertools
 
-from src.types.types import Category, Url
-from src.pages.CataloguePage import CataloguePage
-from src.parser.Parser import Parser
+from typehints.types import Category, Url
+from models.CataloguePage import CataloguePage
+from parsers.Parser import Parser
 
 
 class Catalogue(CataloguePage):
@@ -23,6 +23,7 @@ class Catalogue(CataloguePage):
         categories = self.parser.parse_category_urls(self.html)
         self.categories = categories
         self.size = len(categories)
+        return self.categories
 
     async def async_get_categories_urls(
         self, category_urls: list[Category]

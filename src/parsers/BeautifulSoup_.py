@@ -1,7 +1,7 @@
 import re
 from bs4 import BeautifulSoup
-from src.types.types import Book
-from src.parser.Parser import Parser
+from typehints.types import Book
+from parsers.Parser import Parser
 
 
 class BeautifulSoupParser(Parser):

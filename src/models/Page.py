@@ -1,8 +1,8 @@
 from abc import ABC
 from aiohttp import ClientSession
 
-from src.parser.Parser import Parser
-from src.types.types import Url
+from parsers.Parser import Parser
+from typehints.types import Url
 
 
 class Page(ABC):

@@ -2,11 +2,12 @@ import time
 from pathlib import Path
 import asyncio
 
-from src.types.types import Book
-from src.pages.BookPage import BookPage
-from src.pages.Page import Page
-from src.parser import Parser
-from src.views.cli import log_progress, clr, AnsiClr
+from typehints.types import Book
+from models.BookPage import BookPage
+from models.Page import Page
+from parsers import Parser
+from views.Download import log_progress
+from views.views_utils import clr, AnsiClr
 
 
 class CataloguePage(Page):

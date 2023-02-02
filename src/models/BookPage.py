@@ -1,7 +1,7 @@
 import re
 
-from src.types.types import Book, Url
-from src.pages.Page import Page
+from typehints.types import Book, Url
+from models.Page import Page
 
 
 class BookPage(Page):
