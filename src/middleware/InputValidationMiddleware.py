@@ -1,5 +1,4 @@
 class InputValidationMiddleware:
-
     ERR_CHAR = "Forbidden character"
     ERR_BOUNDARIES = "Category number is out of boundaries"
     ERR_RANGE_FORMAT = "Select a range between 2 numbers separated by a '-'"
@@ -41,7 +40,6 @@ class InputValidationMiddleware:
         segments = [sub_str.strip() for sub_str in user_input.split(",")]
 
         for segment in segments:
-
             # One or two digits category number
             if len(segment) < 3:
                 if not self._is_valid_str(segment, last):

@@ -2,7 +2,6 @@ from views.views_utils import SEPARATOR, AnsiClr, clr
 
 
 def display_categories(categories, grid=False) -> None:
-
     if grid:
         # Adding index prefix to each category and grouping them into columns
         column_number = 5
