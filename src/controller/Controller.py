@@ -2,12 +2,11 @@ from itertools import groupby
 from operator import attrgetter
 from parsers.Selectolax_ import SelectolaxParser
 from parsers.BeautifulSoup_ import BeautifulSoupParser
+from controller.FileSystemController import FileSystemController
 from middleware.InputValidationMiddleware import InputValidationMiddleware
 from views.Home import display_home
 from views.Selection import display_categories, prompt_selection
 from models.Catalogue import Catalogue
-
-from controller.FileSystemController import FileSystemController
 
 
 class Controller:

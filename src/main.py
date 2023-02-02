@@ -13,11 +13,9 @@ async def main():
         app.select_parser(sys.argv[1:])
         app.fs_controller.make_directories("../exports/")
         app.init_catalogue()
-
         await app.async_get_categories()
         app.prompt_selection()
         await app.async_get_cat_urls()
-
         await app.async_get_books_urls()
         await app.async_get_books()
 

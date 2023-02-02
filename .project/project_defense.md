@@ -181,10 +181,10 @@ And in use case #2:
 
 In order to improve the parsing time, **_BeautifulSoup4_** has been replaced by **_Selectolax_**, a parser package based on **_Modest_** a C parser.  
 
-![graph2](../assets/bs4.png)  
+![graph2](assets/bs4.png)  
 **_cProfile call graph for BeautifulSoup4 parsing 1000 books_**  
 
-![graph3](../assets/selectolax.png)  
+![graph3](assets/selectolax.png)  
 **_cProfile call graph for Selectolax parsing 1000 books_**
 
 On the same machine, this resulted in a ~15s improvement to run the whole use case #1.
@@ -196,10 +196,10 @@ On the same machine, this resulted in a ~15s improvement to run the whole use ca
 - **Total execution time to download the whole catalogue: ~4.9ms**   
 - **Time for downloading books and covers: ~2.6ms**  
 
-![stats.png](../assets/stats.png)
+![stats.png](assets/stats.png)
 **_cProfile statistics with asyncio / Selectolax_**
 
-![graph](../assets/P280.png)
+![graph](assets/P280.png)
 **_cProfile call graph with asyncio / Selectolax_**
 
 
@@ -263,15 +263,15 @@ The requirements asked to make a command-line interface to prompt the user for c
 
 1. A welcome view
 
-> ![welcome](../assets/view_welcome.png)  
+> ![welcome](assets/view_welcome.png)  
 
 3. A category selection view
 
-> ![selection](../assets/view_selection.png)  
+> ![selection](assets/view_selection.png)  
 
 3. A loader view
 
-> ![loader](../assets/view_load.png)  
+> ![loader](assets/view_load.png)  
 
 [:arrow_up: Back to top](#top)
 
