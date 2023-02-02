@@ -9,17 +9,19 @@ FIRST_URL = "https://books.toscrape.com/catalogue/page-1.html"
 
 async def main():
 
-    app = Controller(FIRST_URL)
-    app.select_parser(sys.argv[1:])
-    app.make_directories("../exports/")
-
     async with aiohttp.ClientSession() as session:
-        app.set_context(session)
-        app.set_catalogue()
+
+        app = Controller(FIRST_URL, session)
+        app.select_parser(sys.argv[1:])
+        app.make_directories("../exports/")
+        app.init_catalogue()
+
         await app.async_get_categories()
         app.prompt_selection()
         await app.async_get_cat_urls()
+
         app.make_covers_subdirectories()
+
         await app.async_get_books_urls()
         await app.async_get_books()
 

@@ -1,7 +1,7 @@
 from views.views_utils import SEPARATOR, AnsiClr, clr
 
 
-def display_categories(categories, grid=False):
+def display_categories(categories, grid=False) -> None:
 
     if grid:
         # Adding index prefix to each category and grouping them into columns
@@ -34,7 +34,7 @@ def display_categories(categories, grid=False):
     print(f"\n{SEPARATOR}")
 
 
-def prompt_selection():
+def prompt_selection() -> str:
     return input(
         "Please type the category number for each category "
         "you want to select, separated by commas.\n"

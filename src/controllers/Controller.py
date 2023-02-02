@@ -10,7 +10,7 @@ from models.Catalogue import Catalogue
 
 
 class Controller:
-    def __init__(self, first_url):
+    def __init__(self, first_url, session):
         self.dir_base = None
         self.dir_csv = None
         self.dir_covers = None
@@ -21,34 +21,31 @@ class Controller:
         self.first_url = first_url
         self.parser = None
         self.catalogue = None
-        self.context = None
+        self.session = session
         self.books = None
 
-    def select_parser(self, args: list):
-        self.parser = BeautifulSoupParser() \
-            if "-bs4" in args \
-            else SelectolaxParser()
+    def select_parser(self, args: list) -> None:
+        self.parser = (
+            BeautifulSoupParser() if "-bs4" in args else SelectolaxParser()
+        )
 
-    def set_catalogue(self):
+    def init_catalogue(self) -> None:
         self.catalogue = Catalogue(self.first_url, self.parser)
-        self.catalogue.session = self.context
+        self.catalogue.session = self.session
 
-    def set_context(self, context):
-        self.context = context
-
-    async def async_get_categories(self):
+    async def async_get_categories(self) -> None:
         self.categories = await self.catalogue.async_request_categories()
 
-    async def async_get_cat_urls(self):
+    async def async_get_cat_urls(self) -> None:
         await self.catalogue.async_get_categories_urls(self.user_selection)
 
-    async def async_get_books_urls(self):
+    async def async_get_books_urls(self) -> None:
         await self.catalogue.async_get_books_urls()
 
-    async def async_get_books(self):
+    async def async_get_books(self) -> None:
         self.books = await self.catalogue.async_get_books(self.dir_covers)
 
-    def prompt_selection(self):
+    def prompt_selection(self) -> None:
         while True:
             categories = self.categories
             category_names = [category[0] for category in categories]
@@ -58,9 +55,9 @@ class Controller:
 
             user_input = prompt_selection()
             input_validator = InputValidationMiddleware()
-            sel, valid, msg = input_validator \
-                .decode_input(user_input, len(categories)) \
-                .values()
+            sel, valid, msg = input_validator.decode_input(
+                user_input, len(categories)
+            ).values()
 
             if not valid:
                 print(msg)
@@ -80,15 +77,14 @@ class Controller:
         else:
             target_path = Path.cwd() / f"{dir_name}"
         target_path.mkdir(parents=True, exist_ok=True)
-
         return target_path.resolve()
 
-    def make_directories(self, rel_path: str):
+    def make_directories(self, rel_path: str) -> None:
         self.dir_base = self.make_directory(rel_path)
         self.dir_covers = self.make_directory(f"{rel_path}covers")
         self.dir_csv = self.make_directory(f"{rel_path}csv")
 
-    def make_covers_subdirectories(self):
+    def make_covers_subdirectories(self) -> None:
         for category_name, _ in self.user_selection:
             self.make_directory(category_name, self.dir_covers)
 
@@ -96,7 +92,7 @@ class Controller:
         target_path = Path.cwd() / ".." / "exports" / f"{self.dir_csv}"
         target_path.mkdir(parents=True, exist_ok=True)
         with open(
-                target_path / "export.csv", "w", encoding="utf-8", newline=""
+            target_path / "export.csv", "w", encoding="utf-8", newline=""
         ) as f:
             writer = csv.writer(f)
             writer.writerow(self.books[0]._fields)

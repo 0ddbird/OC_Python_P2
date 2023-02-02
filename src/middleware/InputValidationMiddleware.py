@@ -1,4 +1,3 @@
-
 class InputValidationMiddleware:
 
     ERR_CHAR = "Forbidden character"

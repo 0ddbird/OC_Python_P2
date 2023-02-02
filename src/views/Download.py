@@ -1,7 +1,7 @@
 from views.views_utils import AnsiClr, clr
 
 
-def log_progress(done: int, total: int):
+def log_progress(done: int, total: int) -> None:
     progress = int(done / total * 100)
     block_char = "\u2588"
 

@@ -47,7 +47,7 @@ class BeautifulSoupParser(Parser):
             for li in lis
         ]
 
-    def parse_book_page(self, book_html: str, book_url: str) -> Book:
+    def parse_book_page(self, book_html, book_url):
         html = BeautifulSoup(book_html, "lxml").select("div.page_inner")[1]
         num_count = slice(10, -10)
 

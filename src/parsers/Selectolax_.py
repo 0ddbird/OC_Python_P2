@@ -18,7 +18,7 @@ class SelectolaxParser(Parser):
         return categories
 
     @staticmethod
-    def parse_page_count(html) -> int:
+    def parse_page_count(html):
         dom_count = (
             HTMLParser(html).css_first("form.form-horizontal").css("strong")
         )
@@ -30,7 +30,7 @@ class SelectolaxParser(Parser):
         return pages_count if rest == 0 else pages_count + 1
 
     @staticmethod
-    def parse_books_urls(html_str: str) -> list[str]:
+    def parse_books_urls(html_str: str):
         lis = HTMLParser(html_str).css_first("section ol").css("li")
 
         return [
@@ -39,7 +39,7 @@ class SelectolaxParser(Parser):
             for li in lis
         ]
 
-    def parse_book_page(self, book_html: str, book_url: str) -> Book:
+    def parse_book_page(self, book_html, book_url):
         html = HTMLParser(book_html).css("div.page_inner")[1]
         num_count = slice(10, -10)
 
