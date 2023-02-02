@@ -1,7 +1,5 @@
-aiodns
-aiohttp
-cchardet
+aiohttp[speedups]
 selectolax
 bs4
 lxml
-StrEnum
+strenum
