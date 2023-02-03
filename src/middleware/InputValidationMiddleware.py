@@ -7,7 +7,7 @@ class InputValidationMiddleware:
         self.input_result = {"value": set(), "valid": False, "message": ""}
 
     @staticmethod
-    def _can_conv_to_int(num_str: str):
+    def _can_conv_to_int(num_str: str) -> bool:
         try:
             int(num_str)
             return True
@@ -36,7 +36,7 @@ class InputValidationMiddleware:
             return False
         return True
 
-    def decode_input(self, user_input: str, last: int):
+    def decode_input(self, user_input: str, last: int) -> None:
         segments = [sub_str.strip() for sub_str in user_input.split(",")]
 
         for segment in segments:

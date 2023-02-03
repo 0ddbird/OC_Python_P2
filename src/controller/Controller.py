@@ -10,25 +10,21 @@ from models.Catalogue import Catalogue
 
 
 class Controller:
-    def __init__(self, first_url, session):
+    def __init__(self, session, sys_args):
         self.fs_controller = FileSystemController()
         self.categories = None
         self.user_selection = None
         self.categories_urls = None
         self.input_result = {"value": set(), "valid": False, "message": ""}
-        self.first_url = first_url
+        self.first_url = "https://books.toscrape.com/catalogue/page-1.html"
         self.parser = None
         self.catalogue = None
         self.session = session
         self.books = None
         self.book_lists = None
-
-    def select_parser(self, args: list) -> None:
         self.parser = (
-            BeautifulSoupParser() if "-bs4" in args else SelectolaxParser()
+            BeautifulSoupParser() if "-bs4" in sys_args else SelectolaxParser()
         )
-
-    def init_catalogue(self) -> None:
         self.catalogue = Catalogue(self.first_url, self.parser)
         self.catalogue.session = self.session
 
@@ -42,6 +38,8 @@ class Controller:
         await self.catalogue.async_get_books_urls()
 
     async def async_get_books(self) -> None:
+        await self.async_get_cat_urls()
+        await self.async_get_books_urls()
         self.books = await self.catalogue.async_get_books(
             self.fs_controller.dir_covers
         )
@@ -85,3 +83,6 @@ class Controller:
                     self.user_selection
                 )
                 break
+
+    def make_directories(self, path) -> None:
+        self.fs_controller.make_directories(path)
